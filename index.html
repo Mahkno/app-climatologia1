@@ -1,59 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>App de Revisão em Climatologia</title>
-  <style>
-    body {
-      background-color: #03506f;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App de Climatologia</title>
+    <style>
+        body {
+            background-color: #013220;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .button {
+            width: 180px; /* Aumentado em 150% */
+            height: 180px; /* Aumentado em 150% */
+            margin: 10px;
+            border-radius: 50%;
+            background-color: #0ABAB5;
+            color: white;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const questions = [
+            "O que é a climatologia?",
+            "Qual a diferença entre clima e tempo?",
+            "O que é a camada de ozônio?",
+            "O que são gases de efeito estufa?",
+            "Como se formam as nuvens?",
+            "O que é a precipitação?",
+            "Qual a importância das florestas para o clima?",
+            "O que é um ciclone?",
+            "Como os oceanos influenciam o clima?",
+            "O que são mudanças climáticas?",
+            "O que é a umidade relativa do ar?",
+            "Como se mede a temperatura do ar?",
+            "O que é um anemômetro?",
+            "O que é a pressão atmosférica?",
+            "O que são frentes frias e quentes?",
+            "Como a altitude afeta o clima?",
+            "O que é um climatograma?",
+            "O que são zonas climáticas?",
+            "O que é o efeito estufa?",
+            "Como a atividade humana afeta o clima?"
+        ];
 
-    .container {
-      text-align: center;
-      color: white;
-    }
+        function createButton(i) {
+            const button = document.createElement("button");
+            button.innerText = i + 1;
+            button.className = "button";
+            button.onclick = () => {
+                alert(questions[i]);
+            };
+            document.body.appendChild(button);
+        }
 
-    .buttons-container {
-      margin-top: 20px;
-    }
-
-    .number-button {
-      background-color: #00a6a6;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 150px; /* Aumentado para 150% */
-      height: 150px; /* Aumentado para 150% */
-      font-size: 1.5em;
-      margin: 10px;
-      cursor: pointer;
-    }
-
-    .number-button:focus {
-      outline: none;
-    }
-
-    .overlay {
-      background-color: rgba(0, 0, 0, 0.7);
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
-
-    .overlay.show {
+        for (let i = 0; i < questions.length; i++) {
+            createButton(i);
+        }
+    </script>
+</body>
+</html>
