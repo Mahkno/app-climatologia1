@@ -15,8 +15,8 @@
             margin: 0;
         }
         .button {
-            width: 180px; /* Aumentado em 150% */
-            height: 180px; /* Aumentado em 150% */
+            width: 180px;
+            height: 180px;
             margin: 10px;
             border-radius: 50%;
             background-color: #0ABAB5;
@@ -24,6 +24,28 @@
             font-size: 24px;
             border: none;
             cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .button {
+                width: 140px;
+                height: 140px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .button {
+                width: 100px;
+                height: 100px;
+                font-size: 16px;
+            }
+
+            body {
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-top: 20px;
+            }
         }
     </style>
 </head>
