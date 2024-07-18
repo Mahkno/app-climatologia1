@@ -8,15 +8,15 @@
         body {
             background-color: #013220;
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
         }
         .button {
-            width: 180px;
-            height: 180px;
+            width: 120px;
+            height: 120px;
             margin: 10px;
             border-radius: 50%;
             background-color: #0ABAB5;
@@ -25,43 +25,25 @@
             border: none;
             cursor: pointer;
         }
-        @media (max-width: 768px) {
-            .button {
-                width: 140px;
-                height: 140px;
-                font-size: 20px;
-            }
+        form {
+            margin-top: 20px;
+            text-align: center;
         }
-        @media (max-width: 480px) {
-            .button {
-                width: 100px;
-                height: 100px;
-                font-size: 16px;
-            }
-            body {
-                flex-direction: column;
-                justify-content: flex-start;
-                padding-top: 20px;
-            }
-        }
-        .input-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .input-container input {
+        input[type="text"] {
             padding: 10px;
+            margin-right: 10px;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #0ABAB5;
+            color: white;
+            border: none;
+            cursor: pointer;
             font-size: 16px;
-            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="input-container" id="input-container">
-        <input type="text" id="userName" placeholder="Digite seu nome">
-        <button class="button" onclick="startActivity()">Iniciar</button>
-    </div>
     <script>
         const questions = [
             "O que é a climatologia?",
@@ -86,44 +68,24 @@
             "Como a atividade humana afeta o clima?"
         ];
 
-        let userName = "";
-        let responses = [];
-
-        function startActivity() {
-            userName = document.getElementById("userName").value;
-            if (userName.trim() === "") {
-                alert("Por favor, digite seu nome.");
-                return;
-            }
-            document.getElementById("input-container").style.display = "none";
-            renderButtons();
-        }
-
-        function renderButtons() {
-            for (let i = 0; i < questions.length; i++) {
-                createButton(i);
-            }
-        }
-
         function createButton(i) {
             const button = document.createElement("button");
             button.innerText = i + 1;
             button.className = "button";
             button.onclick = () => {
-                const answer = prompt(questions[i]);
-                responses.push({ question: questions[i], answer: answer });
-                if (responses.length === questions.length) {
-                    displayResults();
-                }
+                alert(questions[i]);
             };
             document.body.appendChild(button);
         }
 
-        function displayResults() {
-            alert(`Atividade concluída por ${userName}. Confira suas respostas no console.`);
-            console.log(`Atividade concluída por ${userName}`);
-            console.log(responses);
+        for (let i = 0; i < questions.length; i++) {
+            createButton(i);
         }
     </script>
+
+    <form action="http://localhost:3000/enviar-resposta" method="POST">
+        <input type="text" name="resposta" placeholder="Digite sua resposta...">
+        <button type="submit">Enviar Resposta</button>
+    </form>
 </body>
 </html>
