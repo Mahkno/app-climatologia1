@@ -6,17 +6,47 @@
     <title>App de Climatologia</title>
     <style>
         body {
-            background-color: #013220;
+            background-color: #090321;
+            color: white;
+            font-family: Arial, sans-serif;
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            flex-direction: column;
+            padding: 20px;
+        }
+        #nameForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #0ABAB5;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+        #nameInput {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+        #questionsContainer {
+            width: 100%;
+            max-width: 600px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
         }
         .button {
-            width: 120px;
-            height: 120px;
+            width: 80px;
+            height: 80px;
             margin: 10px;
             border-radius: 50%;
             background-color: #0ABAB5;
@@ -24,18 +54,46 @@
             font-size: 24px;
             border: none;
             cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        form {
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
             margin-top: 20px;
-            text-align: center;
         }
-        input[type="text"] {
+        .question-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #023836;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+        }
+        .question-popup h3 {
+            margin: 0 0 10px 0;
+            border-bottom: 1px solid white;
+        }
+        .question-popup textarea {
+            width: 100%;
+            height: 100px;
+            border-radius: 5px;
             padding: 10px;
-            margin-right: 10px;
+            resize: vertical;
+            font-size: 16px;
         }
-        button[type="submit"] {
+        .popup-close {
+            margin-top: 10px;
             padding: 10px 20px;
-            background-color: #0ABAB5;
+            background-color: #013220;
             color: white;
             border: none;
             cursor: pointer;
@@ -44,6 +102,24 @@
     </style>
 </head>
 <body>
+    <div id="nameForm">
+        <h2>Informe seu nome para começar:</h2>
+        <form id="formName">
+            <input type="text" id="nameInput" placeholder="Seu nome">
+            <button type="submit">Iniciar</button>
+        </form>
+    </div>
+
+    <div id="questionsContainer">
+        <h2>Perguntas para <span id="respondenteNome"></span>:</h2>
+        <div class="buttons-container" id="buttonsContainer"></div>
+        <div class="question-popup" id="questionPopup">
+            <h3 id="questionTitle"></h3>
+            <textarea id="answerInput" placeholder="Digite sua resposta..."></textarea>
+            <button class="popup-close" onclick="closePopup()">Fechar</button>
+        </div>
+    </div>
+
     <script>
         const questions = [
             "O que é a climatologia?",
@@ -68,24 +144,35 @@
             "Como a atividade humana afeta o clima?"
         ];
 
-        function createButton(i) {
-            const button = document.createElement("button");
-            button.innerText = i + 1;
-            button.className = "button";
-            button.onclick = () => {
-                alert(questions[i]);
-            };
-            document.body.appendChild(button);
+        document.getElementById("formName").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const name = document.getElementById("nameInput").value.trim();
+            if (name !== "") {
+                document.getElementById("nameForm").style.display = "none";
+                document.getElementById("questionsContainer").style.display = "flex";
+                document.getElementById("respondenteNome").textContent = name;
+
+                const buttonsContainer = document.getElementById("buttonsContainer");
+                questions.forEach((question, index) => {
+                    const button = document.createElement("button");
+                    button.innerText = index + 1;
+                    button.className = "button";
+                    button.onclick = () => showPopup(index);
+                    buttonsContainer.appendChild(button);
+                });
+            } else {
+                alert("Por favor, informe seu nome.");
+            }
+        });
+
+        function showPopup(index) {
+            document.getElementById("questionTitle").innerText = `${index + 1}. ${questions[index]}`;
+            document.getElementById("questionPopup").style.display = "block";
         }
 
-        for (let i = 0; i < questions.length; i++) {
-            createButton(i);
+        function closePopup() {
+            document.getElementById("questionPopup").style.display = "none";
         }
     </script>
-
-    <form action="http://localhost:3000/enviar-resposta" method="POST">
-        <input type="text" name="resposta" placeholder="Digite sua resposta...">
-        <button type="submit">Enviar Resposta</button>
-    </form>
 </body>
 </html>
