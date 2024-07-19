@@ -90,7 +90,8 @@
             resize: vertical;
             font-size: 16px;
         }
-        .popup-close {
+        .popup-close,
+        .popup-submit {
             margin-top: 10px;
             padding: 10px 20px;
             background-color: #013220;
@@ -98,6 +99,9 @@
             border: none;
             cursor: pointer;
             font-size: 16px;
+        }
+        .popup-submit {
+            background-color: #0ABAB5;
         }
     </style>
 </head>
@@ -117,6 +121,7 @@
             <h3 id="questionTitle"></h3>
             <textarea id="answerInput" placeholder="Digite sua resposta..."></textarea>
             <button class="popup-close" onclick="closePopup()">Fechar</button>
+            <button class="popup-submit" onclick="submitAnswer()">Enviar Resposta</button>
         </div>
     </div>
 
@@ -144,6 +149,8 @@
             "Como a atividade humana afeta o clima?"
         ];
 
+        let currentQuestionIndex = null;
+
         document.getElementById("formName").addEventListener("submit", function(event) {
             event.preventDefault();
             const name = document.getElementById("nameInput").value.trim();
@@ -166,12 +173,29 @@
         });
 
         function showPopup(index) {
+            currentQuestionIndex = index;
             document.getElementById("questionTitle").innerText = `${index + 1}. ${questions[index]}`;
             document.getElementById("questionPopup").style.display = "block";
         }
 
         function closePopup() {
             document.getElementById("questionPopup").style.display = "none";
+            currentQuestionIndex = null;
+        }
+
+        function submitAnswer() {
+            const answer = document.getElementById("answerInput").value.trim();
+            if (answer !== "" && currentQuestionIndex !== null) {
+                const respondente = document.getElementById("respondenteNome").textContent;
+                const question = questions[currentQuestionIndex];
+                console.log(`Respondente: ${respondente}, Pergunta: ${question}, Resposta: ${answer}`);
+                // Aqui você pode adicionar a lógica para enviar a resposta para o servidor ou salvar em algum lugar
+                alert("Resposta enviada com sucesso!");
+                document.getElementById("answerInput").value = "";  // Limpar o campo de resposta
+                closePopup();
+            } else {
+                alert("Por favor, digite uma resposta.");
+            }
         }
     </script>
 </body>
