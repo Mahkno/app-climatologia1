@@ -11,9 +11,10 @@
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             height: 100vh;
             margin: 0;
+            flex-direction: column;
             padding: 20px;
         }
         #nameForm {
@@ -89,7 +90,7 @@
             resize: vertical;
             font-size: 16px;
         }
-        .popup-close, .popup-send {
+        .popup-close, .popup-submit {
             margin-top: 10px;
             padding: 10px 20px;
             background-color: #013220;
@@ -98,36 +99,9 @@
             cursor: pointer;
             font-size: 16px;
         }
-        #responsesContainer {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
-            background-color: #013220;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: left;
-            width: 300px;
-            margin-right: 20px;
-            overflow-y: auto;
-            max-height: 80vh;
-        }
-        .response-item {
-            background-color: #0ABAB5;
-            color: white;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-            width: 100%;
-            box-sizing: border-box;
-        }
     </style>
 </head>
 <body>
-    <div id="responsesContainer">
-        <h2>Respostas:</h2>
-    </div>
-
     <div id="nameForm">
         <h2>Informe seu nome para começar:</h2>
         <form id="formName">
@@ -142,7 +116,7 @@
         <div class="question-popup" id="questionPopup">
             <h3 id="questionTitle"></h3>
             <textarea id="answerInput" placeholder="Digite sua resposta..."></textarea>
-            <button class="popup-send" onclick="sendResponse()">Enviar Resposta</button>
+            <button class="popup-submit" onclick="sendResponse()">Enviar Resposta!</button>
             <button class="popup-close" onclick="closePopup()">Fechar</button>
         </div>
     </div>
@@ -183,17 +157,16 @@
                 questions.forEach((question, index) => {
                     const button = document.createElement("button");
                     button.innerText = index + 1;
-                    button.className = "button";
-                    button.onclick = () => showPopup(index);
+                    button.classList.add("button");
+                    button.addEventListener("click", () => openPopup(question));
                     buttonsContainer.appendChild(button);
                 });
-            } else {
-                alert("Por favor, informe seu nome.");
             }
         });
 
-        function showPopup(index) {
-            document.getElementById("questionTitle").innerText = `${index + 1}. ${questions[index]}`;
+        function openPopup(question) {
+            document.getElementById("questionTitle").innerText = question;
+            document.getElementById("answerInput").value = "";
             document.getElementById("questionPopup").style.display = "block";
         }
 
@@ -206,14 +179,25 @@
             const answer = document.getElementById('answerInput').value;
             const name = document.getElementById('respondenteNome').textContent;
 
-            const responseContainer = document.createElement('div');
-            responseContainer.className = 'response-item';
-            responseContainer.innerHTML = `<strong>${name}</strong><br><strong>${question}</strong><br>${answer}`;
-            document.getElementById('responsesContainer').appendChild(responseContainer);
-
-            alert('Resposta enviada com sucesso!');
-            document.getElementById('answerInput').value = ''; // Limpar o campo de resposta
-            closePopup(); // Fechar o popup
+            fetch('/enviar-resposta', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, question, answer }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message || data.error);
+                if (data.message) {
+                    document.getElementById('answerInput').value = ''; // Limpar o campo de resposta
+                    closePopup(); // Fechar o popup
+                }
+            })
+            .catch(error => {
+                alert('Erro ao enviar a resposta. Tente novamente.');
+                console.error('Erro:', error);
+            });
         }
     </script>
 </body>
