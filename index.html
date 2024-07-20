@@ -103,6 +103,14 @@
         .popup-submit {
             background-color: #0ABAB5;
         }
+        .confirmation-message {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #0ABAB5;
+            color: white;
+            border-radius: 5px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -122,6 +130,7 @@
             <textarea id="answerInput" placeholder="Digite sua resposta..."></textarea>
             <button class="popup-close" onclick="closePopup()">Fechar</button>
             <button class="popup-submit" onclick="submitAnswer()">Enviar Resposta</button>
+            <div class="confirmation-message" id="confirmationMessage">Resposta enviada com sucesso!</div>
         </div>
     </div>
 
@@ -149,8 +158,6 @@
             "Como a atividade humana afeta o clima?"
         ];
 
-        let currentQuestionIndex = null;
-
         document.getElementById("formName").addEventListener("submit", function(event) {
             event.preventDefault();
             const name = document.getElementById("nameInput").value.trim();
@@ -173,28 +180,37 @@
         });
 
         function showPopup(index) {
-            currentQuestionIndex = index;
             document.getElementById("questionTitle").innerText = `${index + 1}. ${questions[index]}`;
             document.getElementById("questionPopup").style.display = "block";
         }
 
         function closePopup() {
             document.getElementById("questionPopup").style.display = "none";
-            currentQuestionIndex = null;
         }
 
         function submitAnswer() {
+            const name = document.getElementById("respondenteNome").textContent;
+            const question = document.getElementById("questionTitle").textContent;
             const answer = document.getElementById("answerInput").value.trim();
-            if (answer !== "" && currentQuestionIndex !== null) {
-                const respondente = document.getElementById("respondenteNome").textContent;
-                const question = questions[currentQuestionIndex];
-                console.log(`Respondente: ${respondente}, Pergunta: ${question}, Resposta: ${answer}`);
-                // Aqui você pode adicionar a lógica para enviar a resposta para o servidor ou salvar em algum lugar
-                alert("Resposta enviada com sucesso!");
-                document.getElementById("answerInput").value = "";  // Limpar o campo de resposta
-                closePopup();
+
+            if (answer !== "") {
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "http://localhost:5000/enviar-resposta", true);
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        const confirmationMessage = document.getElementById("confirmationMessage");
+                        confirmationMessage.style.display = "block";
+                        document.getElementById("answerInput").value = "";
+                        setTimeout(() => {
+                            confirmationMessage.style.display = "none";
+                            closePopup();
+                        }, 2000);
+                    }
+                };
+                xhr.send(JSON.stringify({ name, question, answer }));
             } else {
-                alert("Por favor, digite uma resposta.");
+                alert("Por favor, digite sua resposta.");
             }
         }
     </script>
