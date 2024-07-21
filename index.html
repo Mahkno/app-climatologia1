@@ -12,7 +12,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
             margin: 0;
             padding: 20px;
         }
@@ -43,6 +42,13 @@
             flex-direction: column;
             align-items: center;
         }
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
         .button {
             width: 80px;
             height: 80px;
@@ -56,13 +62,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-        }
-        .buttons-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
         }
         .question-popup {
             display: none;
@@ -89,7 +88,8 @@
             resize: vertical;
             font-size: 16px;
         }
-        .popup-close, .popup-submit {
+        .popup-close,
+        .popup-submit {
             margin-top: 10px;
             padding: 10px 20px;
             background-color: #013220;
@@ -98,16 +98,26 @@
             cursor: pointer;
             font-size: 16px;
         }
-        #responses {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 200px;
+        .popup-submit {
             background-color: #0ABAB5;
-            padding: 20px;
+        }
+        #responseContainer {
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            max-width: 600px;
+            background-color: #023836;
             border-radius: 10px;
             overflow-y: auto;
-            max-height: 100vh;
+            max-height: 300px;
+            word-wrap: break-word;
+        }
+        .response {
+            background-color: #013220;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            overflow-wrap: break-word;
         }
     </style>
 </head>
@@ -126,14 +136,10 @@
         <div class="question-popup" id="questionPopup">
             <h3 id="questionTitle"></h3>
             <textarea id="answerInput" placeholder="Digite sua resposta..."></textarea>
-            <button class="popup-submit" onclick="sendResponse()">Enviar Resposta</button>
+            <button class="popup-submit" onclick="sendResponse()">Enviar Resposta!</button>
             <button class="popup-close" onclick="closePopup()">Fechar</button>
         </div>
-    </div>
-
-    <div id="responses">
-        <h3>Respostas:</h3>
-        <div id="responsesContent"></div>
+        <div id="responseContainer"></div>
     </div>
 
     <script>
@@ -195,15 +201,11 @@
             const answer = document.getElementById('answerInput').value;
             const name = document.getElementById('respondenteNome').textContent;
 
-            if (answer.trim() === "") {
-                alert("Por favor, digite sua resposta.");
-                return;
-            }
-
-            const responsesContainer = document.getElementById('responsesContent');
-            const responseElement = document.createElement('div');
-            responseElement.innerHTML = `<strong>${name}:</strong> ${question}<br><em>${answer}</em>`;
-            responsesContainer.appendChild(responseElement);
+            const responseContainer = document.getElementById('responseContainer');
+            const response = document.createElement('div');
+            response.className = 'response';
+            response.innerText = `Pergunta: ${question}\nResposta: ${answer}\nRespondente: ${name}`;
+            responseContainer.appendChild(response);
 
             document.getElementById('answerInput').value = ''; // Limpar o campo de resposta
             closePopup(); // Fechar o popup
