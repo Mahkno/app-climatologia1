@@ -120,6 +120,7 @@
             overflow-wrap: break-word;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div id="nameForm">
@@ -140,6 +141,7 @@
             <button class="popup-close" onclick="closePopup()">Fechar</button>
         </div>
         <div id="responseContainer"></div>
+        <button class="popup-submit" onclick="createPDF()">Criar PDF</button>
     </div>
 
     <script>
@@ -182,6 +184,17 @@
                     button.onclick = () => showPopup(index);
                     buttonsContainer.appendChild(button);
                 });
+
+                // Carregar respostas do Local Storage
+                const responses = JSON.parse(localStorage.getItem('responses')) || [];
+                const responseContainer = document.getElementById('responseContainer');
+                responses.forEach(({ question, answer, name }) => {
+                    const response = document.createElement('div');
+                    response.className = 'response';
+                    response.innerText = `Pergunta: ${question}\nResposta: ${answer}\nRespondente: ${name}`;
+                    responseContainer.appendChild(response);
+                });
+
             } else {
                 alert("Por favor, informe seu nome.");
             }
@@ -189,6 +202,7 @@
 
         function showPopup(index) {
             document.getElementById("questionTitle").innerText = `${index + 1}. ${questions[index]}`;
+            document.getElementById("answerInput").value = '';
             document.getElementById("questionPopup").style.display = "block";
         }
 
@@ -207,8 +221,28 @@
             response.innerText = `Pergunta: ${question}\nResposta: ${answer}\nRespondente: ${name}`;
             responseContainer.appendChild(response);
 
+            // Salvar resposta no Local Storage
+            let responses = JSON.parse(localStorage.getItem('responses')) || [];
+            responses.push({ question, answer, name });
+            localStorage.setItem('responses', JSON.stringify(responses));
+
             document.getElementById('answerInput').value = ''; // Limpar o campo de resposta
             closePopup(); // Fechar o popup
+        }
+
+        function createPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const responses = document.querySelectorAll('.response');
+            let content = '';
+
+            responses.forEach((response, index) => {
+                content += `${index + 1}. ${response.innerText}\n\n`;
+            });
+
+            doc.text(content, 10, 10);
+            doc.save('respostas.pdf');
         }
     </script>
 </body>
