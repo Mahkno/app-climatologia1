@@ -10,8 +10,8 @@
             color: white;
             font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            flex-direction: column;
+            align-items: center;
             height: 100vh;
             margin: 0;
             padding: 20px;
@@ -89,7 +89,7 @@
             resize: vertical;
             font-size: 16px;
         }
-        .popup-close, .popup-send {
+        .popup-close, .popup-submit {
             margin-top: 10px;
             padding: 10px 20px;
             background-color: #013220;
@@ -98,36 +98,20 @@
             cursor: pointer;
             font-size: 16px;
         }
-        #responsesContainer {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
-            background-color: #013220;
+        #responses {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 200px;
+            background-color: #0ABAB5;
             padding: 20px;
             border-radius: 10px;
-            text-align: left;
-            width: 300px;
-            margin-right: 20px;
             overflow-y: auto;
-            max-height: 80vh;
-        }
-        .response-item {
-            background-color: #0ABAB5;
-            color: white;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-            width: 100%;
-            box-sizing: border-box;
+            max-height: 100vh;
         }
     </style>
 </head>
 <body>
-    <div id="responsesContainer">
-        <h2>Respostas:</h2>
-    </div>
-
     <div id="nameForm">
         <h2>Informe seu nome para começar:</h2>
         <form id="formName">
@@ -142,9 +126,14 @@
         <div class="question-popup" id="questionPopup">
             <h3 id="questionTitle"></h3>
             <textarea id="answerInput" placeholder="Digite sua resposta..."></textarea>
-            <button class="popup-send" onclick="sendResponse()">Enviar Resposta</button>
+            <button class="popup-submit" onclick="sendResponse()">Enviar Resposta</button>
             <button class="popup-close" onclick="closePopup()">Fechar</button>
         </div>
+    </div>
+
+    <div id="responses">
+        <h3>Respostas:</h3>
+        <div id="responsesContent"></div>
     </div>
 
     <script>
@@ -206,12 +195,16 @@
             const answer = document.getElementById('answerInput').value;
             const name = document.getElementById('respondenteNome').textContent;
 
-            const responseContainer = document.createElement('div');
-            responseContainer.className = 'response-item';
-            responseContainer.innerHTML = `<strong>${name}</strong><br><strong>${question}</strong><br>${answer}`;
-            document.getElementById('responsesContainer').appendChild(responseContainer);
+            if (answer.trim() === "") {
+                alert("Por favor, digite sua resposta.");
+                return;
+            }
 
-            alert('Resposta enviada com sucesso!');
+            const responsesContainer = document.getElementById('responsesContent');
+            const responseElement = document.createElement('div');
+            responseElement.innerHTML = `<strong>${name}:</strong> ${question}<br><em>${answer}</em>`;
+            responsesContainer.appendChild(responseElement);
+
             document.getElementById('answerInput').value = ''; // Limpar o campo de resposta
             closePopup(); // Fechar o popup
         }
